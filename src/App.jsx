@@ -13,12 +13,19 @@ import ProtectedRoute from "./components/ProtectedRoute";
 export default function App() {
   return (
     <UserProvider>
-      <BrowserRouter>
+      <BrowserRouter
+        future={{
+          v7_startTransition: true,
+          v7_relativeSplatPath: true,
+        }}
+      >
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<Landing />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/onboarding" element={<Onboarding />} />
 
+          {/* Protected Routes */}
           <Route
             path="/dashboard"
             element={

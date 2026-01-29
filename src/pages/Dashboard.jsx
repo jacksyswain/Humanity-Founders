@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { useState, useEffect } from "react";
 import TaskCard from "../components/TaskCard";
+import Layout from "../components/Layout";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -55,75 +56,75 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-8 space-y-8">
-      {/* HEADER */}
-      <div>
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        <p className="text-gray-500">
-          Current Stage: <strong>{profile.stage}</strong>
-        </p>
-      </div>
-
-      {/* PROFILE SUMMARY */}
-      <div className="grid grid-cols-2 gap-6">
-        <div className="border rounded p-4">
-          <h3 className="font-semibold mb-2">Profile Summary</h3>
-          <p>Education: {profile.education || "—"}</p>
-          <p>Target Degree: {profile.targetDegree || "—"}</p>
-          <p>Countries: {profile.countries || "—"}</p>
-          <p>Budget: {profile.budget || "—"}</p>
+    <Layout title="Dashboard">
+      <div className="max-w-5xl mx-auto space-y-8">
+        {/* HEADER */}
+        <div>
+          <p className="text-gray-500">
+            Current Stage: <strong>{profile.stage}</strong>
+          </p>
         </div>
 
-        {/* PROFILE STRENGTH */}
-        <div className="border rounded p-4">
-          <h3 className="font-semibold mb-2">Profile Strength (AI)</h3>
+        {/* PROFILE SUMMARY + STRENGTH */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card>
+            <h3 className="font-semibold mb-3">Profile Summary</h3>
+            <p>Education: {profile.education || "—"}</p>
+            <p>Target Degree: {profile.targetDegree || "—"}</p>
+            <p>Countries: {profile.countries || "—"}</p>
+            <p>Budget: {profile.budget || "—"}</p>
+          </Card>
 
-          <div className="space-y-2">
-            <StrengthRow label="Academics" value={profileStrength.academics} />
-            <StrengthRow label="Exams" value={profileStrength.exams} />
-            <StrengthRow label="SOP" value={profileStrength.sop} />
-          </div>
+          <Card>
+            <h3 className="font-semibold mb-3">Profile Strength (AI)</h3>
+            <div className="space-y-2">
+              <StrengthRow label="Academics" value={profileStrength.academics} />
+              <StrengthRow label="Exams" value={profileStrength.exams} />
+              <StrengthRow label="SOP" value={profileStrength.sop} />
+            </div>
+          </Card>
+        </div>
+
+        {/* AI TODO LIST */}
+        <Card>
+          <h3 className="font-semibold mb-4">AI To-Do List</h3>
+
+          {tasks.length === 0 ? (
+            <p className="text-gray-500">You are all caught up 🎉</p>
+          ) : (
+            <div className="space-y-3">
+              {tasks.map(task => (
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  onComplete={() => markComplete(task.id)}
+                />
+              ))}
+            </div>
+          )}
+        </Card>
+
+        {/* PRIMARY ACTION */}
+        <div className="flex justify-end">
+          <button
+            onClick={() => navigate("/counsellor")}
+            className="bg-black text-white px-6 py-3 rounded-lg hover:opacity-90 transition"
+          >
+            Talk to AI Counsellor →
+          </button>
         </div>
       </div>
-
-      {/* AI TODO LIST */}
-      <div className="border rounded p-4">
-        <h3 className="font-semibold mb-4">AI To-Do List</h3>
-
-        {tasks.length === 0 ? (
-          <p className="text-gray-500">You are all caught up 🎉</p>
-        ) : (
-          <div className="space-y-3">
-            {tasks.map(task => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                onComplete={() => markComplete(task.id)}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* PRIMARY ACTION */}
-      <div className="flex justify-end">
-        <button
-          onClick={() => navigate("/counsellor")}
-          className="bg-black text-white px-6 py-3 rounded"
-        >
-          Talk to AI Counsellor →
-        </button>
-      </div>
-    </div>
+    </Layout>
   );
 }
 
-// ---- SMALL HELPER COMPONENT ----
+/* ------------------ HELPERS ------------------ */
+
 function StrengthRow({ label, value }) {
   const color =
     value === "Strong"
       ? "text-green-600"
-      : value === "Average"
+      : value === "Average" || value === "In Progress"
       ? "text-yellow-600"
       : "text-red-600";
 
@@ -131,6 +132,14 @@ function StrengthRow({ label, value }) {
     <div className="flex justify-between">
       <span>{label}</span>
       <span className={`font-medium ${color}`}>{value}</span>
+    </div>
+  );
+}
+
+function Card({ children }) {
+  return (
+    <div className="bg-white border rounded-lg p-4 shadow-sm">
+      {children}
     </div>
   );
 }
