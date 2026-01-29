@@ -57,38 +57,31 @@ export default function Dashboard() {
 
   return (
     <Layout title="Dashboard">
-      <div className="max-w-5xl mx-auto space-y-8">
-        {/* HEADER */}
-        <div>
-          <p className="text-gray-500">
-            Current Stage: <strong>{profile.stage}</strong>
-          </p>
+      <div className="max-w-6xl mx-auto space-y-10">
+        {/* STAGE CARD */}
+        <div className="bg-white border rounded-xl p-6 shadow-sm">
+          <p className="text-sm text-gray-500 mb-1">Current Stage</p>
+          <p className="text-xl font-semibold">{profile.stage}</p>
         </div>
 
         {/* PROFILE SUMMARY + STRENGTH */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card>
-            <h3 className="font-semibold mb-3">Profile Summary</h3>
-            <p>Education: {profile.education || "—"}</p>
-            <p>Target Degree: {profile.targetDegree || "—"}</p>
-            <p>Countries: {profile.countries || "—"}</p>
-            <p>Budget: {profile.budget || "—"}</p>
+          <Card title="Profile Summary">
+            <InfoRow label="Education" value={profile.education} />
+            <InfoRow label="Target Degree" value={profile.targetDegree} />
+            <InfoRow label="Countries" value={profile.countries} />
+            <InfoRow label="Budget" value={profile.budget} />
           </Card>
 
-          <Card>
-            <h3 className="font-semibold mb-3">Profile Strength (AI)</h3>
-            <div className="space-y-2">
-              <StrengthRow label="Academics" value={profileStrength.academics} />
-              <StrengthRow label="Exams" value={profileStrength.exams} />
-              <StrengthRow label="SOP" value={profileStrength.sop} />
-            </div>
+          <Card title="Profile Strength (AI)">
+            <StrengthRow label="Academics" value={profileStrength.academics} />
+            <StrengthRow label="Exams" value={profileStrength.exams} />
+            <StrengthRow label="SOP" value={profileStrength.sop} />
           </Card>
         </div>
 
         {/* AI TODO LIST */}
-        <Card>
-          <h3 className="font-semibold mb-4">AI To-Do List</h3>
-
+        <Card title="AI To-Do List">
           {tasks.length === 0 ? (
             <p className="text-gray-500">You are all caught up 🎉</p>
           ) : (
@@ -108,7 +101,7 @@ export default function Dashboard() {
         <div className="flex justify-end">
           <button
             onClick={() => navigate("/counsellor")}
-            className="bg-black text-white px-6 py-3 rounded-lg hover:opacity-90 transition"
+            className="bg-black text-white px-8 py-4 rounded-xl text-lg hover:opacity-90 transition"
           >
             Talk to AI Counsellor →
           </button>
@@ -129,16 +122,26 @@ function StrengthRow({ label, value }) {
       : "text-red-600";
 
   return (
-    <div className="flex justify-between">
-      <span>{label}</span>
+    <div className="flex justify-between items-center py-1">
+      <span className="text-gray-700">{label}</span>
       <span className={`font-medium ${color}`}>{value}</span>
     </div>
   );
 }
 
-function Card({ children }) {
+function InfoRow({ label, value }) {
   return (
-    <div className="bg-white border rounded-lg p-4 shadow-sm">
+    <div className="flex justify-between items-center py-1">
+      <span className="text-gray-500">{label}</span>
+      <span className="font-medium">{value || "—"}</span>
+    </div>
+  );
+}
+
+function Card({ title, children }) {
+  return (
+    <div className="bg-white border rounded-xl p-6 shadow-sm space-y-3">
+      {title && <h3 className="font-semibold text-lg">{title}</h3>}
       {children}
     </div>
   );
