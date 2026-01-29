@@ -19,7 +19,6 @@ export default function Universities() {
     const confirmed = window.confirm(
       "Locking a university will make your strategy application-specific. You can unlock later if needed."
     );
-
     if (!confirmed) return;
 
     setProfile(p => ({
@@ -42,28 +41,32 @@ export default function Universities() {
 
   return (
     <Layout title="University Shortlist">
-      <div className="max-w-6xl mx-auto space-y-10">
-        {/* SUBTEXT */}
-        <p className="text-gray-600">
-          Universities are grouped by ambition and acceptance probability.
-          Locking a university sets your application strategy.
-        </p>
+      <div className="max-w-6xl mx-auto space-y-12">
+        {/* INTRO */}
+        <div className="bg-white border rounded-xl p-6 shadow-sm">
+          <p className="text-gray-600 text-lg">
+            Universities are grouped by <strong>ambition</strong> and{" "}
+            <strong>acceptance probability</strong>.  
+            Locking a university will personalize your entire application
+            strategy.
+          </p>
+        </div>
 
         {/* LOCKED BANNER */}
         {isLocked && (
-          <div className="bg-green-50 border border-green-600 rounded-lg p-4 flex justify-between items-center">
+          <div className="flex items-center justify-between bg-gradient-to-r from-green-50 to-green-100 border border-green-600 rounded-xl p-5 shadow-sm">
             <div>
-              <p className="font-semibold text-green-700">
+              <p className="text-sm text-green-700 uppercase tracking-wide">
                 Locked University
               </p>
-              <p className="text-sm text-green-600">
+              <p className="text-lg font-semibold text-green-800">
                 {lockedUniversity}
               </p>
             </div>
 
             <button
               onClick={() => setShowUnlockModal(true)}
-              className="text-sm text-red-600 underline"
+              className="text-sm text-red-600 font-medium underline hover:text-red-700"
             >
               Unlock
             </button>
@@ -71,7 +74,10 @@ export default function Universities() {
         )}
 
         {/* DREAM */}
-        <Section title="Dream Universities">
+        <Section
+          title="Dream Universities"
+          subtitle="Highly ambitious choices with strong competition"
+        >
           {universities.dream.map(uni => (
             <UniversityCard
               key={uni.id}
@@ -83,7 +89,10 @@ export default function Universities() {
         </Section>
 
         {/* TARGET */}
-        <Section title="Target Universities">
+        <Section
+          title="Target Universities"
+          subtitle="Balanced options with realistic acceptance chances"
+        >
           {universities.target.map(uni => (
             <UniversityCard
               key={uni.id}
@@ -95,7 +104,10 @@ export default function Universities() {
         </Section>
 
         {/* SAFE */}
-        <Section title="Safe Universities">
+        <Section
+          title="Safe Universities"
+          subtitle="High acceptance probability and lower risk"
+        >
           {universities.safe.map(uni => (
             <UniversityCard
               key={uni.id}
@@ -118,12 +130,16 @@ export default function Universities() {
   );
 }
 
-/* ------------------ SECTION WRAPPER ------------------ */
+/* ------------------ SECTION ------------------ */
 
-function Section({ title, children }) {
+function Section({ title, subtitle, children }) {
   return (
-    <div>
-      <h2 className="text-xl font-semibold mb-4">{title}</h2>
+    <div className="space-y-4">
+      <div>
+        <h2 className="text-2xl font-bold">{title}</h2>
+        <p className="text-gray-500">{subtitle}</p>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {children}
       </div>
