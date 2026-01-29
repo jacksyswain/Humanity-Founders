@@ -5,29 +5,42 @@ import ChatBubble from "../components/ChatBubble";
 
 export default function Counsellor() {
   const navigate = useNavigate();
-  const { profile, setProfile } = useUser();
+  const { profile } = useUser();
 
-  const [messages, setMessages] = useState([]);
+  // ---- PERSISTED CHAT HISTORY ----
+  const [messages, setMessages] = useState(() => {
+    const saved = localStorage.getItem("aiMessages");
+    return saved ? JSON.parse(saved) : [];
+  });
+
   const [input, setInput] = useState("");
 
-  // ---- INITIAL AI MESSAGE ----
+  // ---- SAVE CHAT TO LOCALSTORAGE ----
   useEffect(() => {
-    setMessages([
-      {
-        role: "ai",
-        text: `Hi! I’ve reviewed your profile. What would you like to do next?`,
-        actions: [
-          {
-            label: "Evaluate my profile",
-            onClick: () => handleAI("evaluate"),
-          },
-          {
-            label: "Suggest universities",
-            onClick: () => handleAI("universities"),
-          },
-        ],
-      },
-    ]);
+    localStorage.setItem("aiMessages", JSON.stringify(messages));
+  }, [messages]);
+
+  // ---- INITIAL AI MESSAGE (ONLY ONCE) ----
+  useEffect(() => {
+    if (messages.length === 0) {
+      setMessages([
+        {
+          role: "ai",
+          text: `Hi! I’ve reviewed your profile. What would you like to do next?`,
+          actions: [
+            {
+              label: "Evaluate my profile",
+              onClick: () => handleAI("evaluate"),
+            },
+            {
+              label: "Suggest universities",
+              onClick: () => handleAI("universities"),
+            },
+          ],
+        },
+      ]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ---- USER SEND MESSAGE ----
@@ -39,29 +52,30 @@ export default function Counsellor() {
     setInput("");
   };
 
-  // ---- MOCK AI LOGIC ----
+  // ---- MOCK AI DECISION LOGIC ----
   const handleAI = intent => {
-    let response = null;
+    let response;
 
-    if (intent === "evaluate" || intent.includes("profile")) {
+    if (intent === "evaluate" || intent.toLowerCase().includes("profile")) {
       response = {
         role: "ai",
         text:
-          "Your academics look solid, but exams and SOP need attention. I recommend shortlisting universities next while preparing exams.",
+          "Your academics are solid, but exams and SOP need improvement. I recommend starting exam prep while shortlisting universities.",
         actions: [
           {
-            label: "View To-Do List",
+            label: "View AI To-Do List",
             onClick: () => navigate("/dashboard"),
           },
         ],
       };
-    }
-
-    if (intent === "universities" || intent.includes("university")) {
+    } else if (
+      intent === "universities" ||
+      intent.toLowerCase().includes("university")
+    ) {
       response = {
         role: "ai",
         text:
-          "Based on your profile and budget, I’ve identified Dream, Target, and Safe universities for you.",
+          "I’ve shortlisted Dream, Target, and Safe universities based on your profile, budget, and competition level.",
         actions: [
           {
             label: "View University Shortlist",
@@ -69,9 +83,7 @@ export default function Counsellor() {
           },
         ],
       };
-    }
-
-    if (!response) {
+    } else {
       response = {
         role: "ai",
         text:
@@ -81,7 +93,7 @@ export default function Counsellor() {
 
     setTimeout(() => {
       setMessages(m => [...m, response]);
-    }, 600);
+    }, 500);
   };
 
   return (
@@ -90,11 +102,11 @@ export default function Counsellor() {
       <div className="border-b pb-3 mb-4">
         <h2 className="text-xl font-bold">AI Counsellor</h2>
         <p className="text-sm text-gray-500">
-          Stage: {profile.stage}
+          Current Stage: {profile.stage}
         </p>
       </div>
 
-      {/* CHAT AREA */}
+      {/* CHAT WINDOW */}
       <div className="flex-1 overflow-y-auto mb-4">
         {messages.map((msg, idx) => (
           <ChatBubble key={idx} {...msg} />
@@ -108,6 +120,7 @@ export default function Counsellor() {
           onChange={e => setInput(e.target.value)}
           placeholder="Ask me anything..."
           className="flex-1 border rounded px-3 py-2"
+          onKeyDown={e => e.key === "Enter" && sendMessage()}
         />
         <button
           onClick={sendMessage}
