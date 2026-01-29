@@ -38,28 +38,31 @@ export default function Onboarding() {
 
   return (
     <Layout title="Onboarding">
-      <div className="max-w-xl mx-auto space-y-6">
-        {/* INTRO */}
-        <div>
-          <p className="text-gray-500 text-sm mb-1">
+      <div className="max-w-2xl mx-auto space-y-10">
+        {/* INTRO CARD */}
+        <div className="bg-white border rounded-xl p-6 shadow-sm">
+          <p className="text-sm text-gray-500 mb-1">
             Step {step} of {TOTAL_STEPS}
           </p>
           <h2 className="text-2xl font-bold">
             Tell us about yourself
           </h2>
-          <p className="text-gray-600 mt-1">
-            This helps the AI counsellor guide you better.
+          <p className="text-gray-600 mt-2">
+            This information helps the AI counsellor personalize your guidance.
           </p>
+
+          <div className="mt-4">
+            <ProgressBar step={step} total={TOTAL_STEPS} />
+          </div>
         </div>
 
-        {/* PROGRESS */}
-        <ProgressBar step={step} total={TOTAL_STEPS} />
-
-        {/* FORM CARD */}
-        <div className="bg-white border rounded-lg p-6 shadow-sm space-y-4">
+        {/* FORM SECTION */}
+        <div className="bg-white border rounded-xl p-6 shadow-sm space-y-5">
           {/* STEP 1 */}
           {step === 1 && (
             <>
+              <SectionTitle title="Academic Background" />
+
               <Input
                 label="Current Education"
                 placeholder="Bachelor's / Master's"
@@ -88,6 +91,8 @@ export default function Onboarding() {
           {/* STEP 2 */}
           {step === 2 && (
             <>
+              <SectionTitle title="Study Goals" />
+
               <Input
                 label="Target Degree"
                 placeholder="MS / MBA / PhD"
@@ -125,6 +130,8 @@ export default function Onboarding() {
           {/* STEP 3 */}
           {step === 3 && (
             <>
+              <SectionTitle title="Readiness & Exams" />
+
               <Input
                 label="Exams Status"
                 placeholder="IELTS / GRE / Not Started"
@@ -154,11 +161,11 @@ export default function Onboarding() {
         </div>
 
         {/* NAVIGATION */}
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center">
           {step > 1 && (
             <button
               onClick={back}
-              className="px-4 py-2 border rounded-lg"
+              className="px-5 py-2 border rounded-lg"
             >
               Back
             </button>
@@ -169,7 +176,7 @@ export default function Onboarding() {
               onClick={next}
               className="ml-auto bg-black text-white px-6 py-2 rounded-lg hover:opacity-90 transition"
             >
-              Next
+              Continue →
             </button>
           ) : (
             <button
@@ -185,7 +192,7 @@ export default function Onboarding() {
   );
 }
 
-/* ------------------ REUSABLE INPUT ------------------ */
+/* ------------------ HELPERS ------------------ */
 
 function Input({ label, placeholder, value, onChange }) {
   return (
@@ -195,10 +202,18 @@ function Input({ label, placeholder, value, onChange }) {
       </label>
       <input
         placeholder={placeholder}
-        className="w-full border rounded px-3 py-2"
+        className="w-full border rounded-lg px-3 py-2"
         value={value}
         onChange={e => onChange(e.target.value)}
       />
     </div>
+  );
+}
+
+function SectionTitle({ title }) {
+  return (
+    <h3 className="text-lg font-semibold border-b pb-2 mb-4">
+      {title}
+    </h3>
   );
 }
