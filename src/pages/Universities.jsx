@@ -4,6 +4,7 @@ import { universities } from "../data/universities";
 import UniversityCard from "../components/UniversityCard";
 import UnlockModal from "../components/UnlockModal";
 import { useNavigate } from "react-router-dom";
+import Layout from "../components/Layout";
 
 export default function Universities() {
   const { profile, setProfile } = useUser();
@@ -16,7 +17,7 @@ export default function Universities() {
 
   const lockUniversity = uni => {
     const confirmed = window.confirm(
-      "Locking a university will make your strategy application-specific."
+      "Locking a university will make your strategy application-specific. You can unlock later if needed."
     );
 
     if (!confirmed) return;
@@ -40,82 +41,84 @@ export default function Universities() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-8 space-y-10">
-      {/* HEADER */}
-      <div>
-        <h1 className="text-3xl font-bold">University Shortlist</h1>
-        <p className="text-gray-500">
-          Choose carefully — locking sets your application strategy
+    <Layout title="University Shortlist">
+      <div className="max-w-6xl mx-auto space-y-10">
+        {/* SUBTEXT */}
+        <p className="text-gray-600">
+          Universities are grouped by ambition and acceptance probability.
+          Locking a university sets your application strategy.
         </p>
-      </div>
 
-      {/* LOCKED BANNER */}
-      {isLocked && (
-        <div className="border border-green-600 bg-green-50 rounded p-4 flex justify-between items-center">
-          <div>
-            <p className="font-medium text-green-700">
-              Locked University
-            </p>
-            <p className="text-sm text-green-600">
-              {lockedUniversity}
-            </p>
+        {/* LOCKED BANNER */}
+        {isLocked && (
+          <div className="bg-green-50 border border-green-600 rounded-lg p-4 flex justify-between items-center">
+            <div>
+              <p className="font-semibold text-green-700">
+                Locked University
+              </p>
+              <p className="text-sm text-green-600">
+                {lockedUniversity}
+              </p>
+            </div>
+
+            <button
+              onClick={() => setShowUnlockModal(true)}
+              className="text-sm text-red-600 underline"
+            >
+              Unlock
+            </button>
           </div>
+        )}
 
-          <button
-            onClick={() => setShowUnlockModal(true)}
-            className="text-sm text-red-600 underline"
-          >
-            Unlock
-          </button>
-        </div>
-      )}
+        {/* DREAM */}
+        <Section title="Dream Universities">
+          {universities.dream.map(uni => (
+            <UniversityCard
+              key={uni.id}
+              uni={uni}
+              locked={isLocked}
+              onLock={() => lockUniversity(uni)}
+            />
+          ))}
+        </Section>
 
-      {/* DREAM */}
-      <Section title="Dream Universities">
-        {universities.dream.map(uni => (
-          <UniversityCard
-            key={uni.id}
-            uni={uni}
-            locked={isLocked}
-            onLock={() => lockUniversity(uni)}
+        {/* TARGET */}
+        <Section title="Target Universities">
+          {universities.target.map(uni => (
+            <UniversityCard
+              key={uni.id}
+              uni={uni}
+              locked={isLocked}
+              onLock={() => lockUniversity(uni)}
+            />
+          ))}
+        </Section>
+
+        {/* SAFE */}
+        <Section title="Safe Universities">
+          {universities.safe.map(uni => (
+            <UniversityCard
+              key={uni.id}
+              uni={uni}
+              locked={isLocked}
+              onLock={() => lockUniversity(uni)}
+            />
+          ))}
+        </Section>
+
+        {/* UNLOCK MODAL */}
+        {showUnlockModal && (
+          <UnlockModal
+            onCancel={() => setShowUnlockModal(false)}
+            onConfirm={unlockUniversity}
           />
-        ))}
-      </Section>
-
-      {/* TARGET */}
-      <Section title="Target Universities">
-        {universities.target.map(uni => (
-          <UniversityCard
-            key={uni.id}
-            uni={uni}
-            locked={isLocked}
-            onLock={() => lockUniversity(uni)}
-          />
-        ))}
-      </Section>
-
-      {/* SAFE */}
-      <Section title="Safe Universities">
-        {universities.safe.map(uni => (
-          <UniversityCard
-            key={uni.id}
-            uni={uni}
-            locked={isLocked}
-            onLock={() => lockUniversity(uni)}
-          />
-        ))}
-      </Section>
-
-      {/* UNLOCK MODAL */}
-      {showUnlockModal && (
-        <UnlockModal
-          onCancel={() => setShowUnlockModal(false)}
-          onConfirm={unlockUniversity}
-        />
-      )}
-    </div>
+        )}
+      </div>
+    </Layout>
   );
 }
+
+/* ------------------ SECTION WRAPPER ------------------ */
 
 function Section({ title, children }) {
   return (
