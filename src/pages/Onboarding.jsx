@@ -80,12 +80,14 @@ export default function Onboarding() {
   return (
     <Layout title="Onboarding">
       <div className="max-w-2xl mx-auto space-y-10">
-        {/* INTRO */}
-        <div className="bg-white border rounded-xl p-6 shadow-sm">
-          <p className="text-sm text-gray-500 mb-1">
+        {/* INTRO CARD */}
+        <div className="bg-gradient-to-r from-indigo-50 to-emerald-50 border border-indigo-200 rounded-2xl p-6 shadow-sm">
+          <p className="text-sm text-indigo-600 mb-1">
             Step {step} of {TOTAL_STEPS}
           </p>
-          <h2 className="text-2xl font-bold">Tell us about yourself</h2>
+          <h2 className="text-2xl font-bold text-gray-900">
+            Tell us about yourself
+          </h2>
           <p className="text-gray-600 mt-2">
             This helps the AI counsellor personalize your guidance.
           </p>
@@ -95,8 +97,8 @@ export default function Onboarding() {
           </div>
         </div>
 
-        {/* FORM */}
-        <div className="bg-white border rounded-xl p-6 shadow-sm space-y-5">
+        {/* FORM CARD */}
+        <div className="bg-white/80 backdrop-blur border rounded-2xl p-6 shadow-sm space-y-6">
           {/* STEP 1 */}
           {step === 1 && (
             <>
@@ -184,7 +186,9 @@ export default function Onboarding() {
                 </label>
                 <select
                   className={`w-full border rounded-lg px-3 py-2 ${
-                    errors.sop ? "border-red-500" : ""
+                    errors.sop
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                   value={form.sop}
                   onChange={e =>
@@ -206,12 +210,12 @@ export default function Onboarding() {
           )}
         </div>
 
-        {/* NAV */}
-        <div className="flex justify-between">
+        {/* NAVIGATION */}
+        <div className="flex justify-between items-center">
           {step > 1 && (
             <button
               onClick={back}
-              className="px-5 py-2 border rounded-lg"
+              className="px-5 py-2 border rounded-xl hover:bg-gray-50 transition"
             >
               Back
             </button>
@@ -220,14 +224,14 @@ export default function Onboarding() {
           {step < TOTAL_STEPS ? (
             <button
               onClick={next}
-              className="ml-auto bg-black text-white px-6 py-2 rounded-lg hover:opacity-90 transition"
+              className="ml-auto bg-indigo-600 text-white px-6 py-2 rounded-xl hover:bg-indigo-700 transition shadow"
             >
               Continue →
             </button>
           ) : (
             <button
               onClick={completeOnboarding}
-              className="ml-auto bg-black text-white px-6 py-2 rounded-lg hover:opacity-90 transition"
+              className="ml-auto bg-emerald-600 text-white px-6 py-2 rounded-xl hover:bg-emerald-700 transition shadow"
             >
               Complete Onboarding
             </button>
@@ -243,22 +247,28 @@ export default function Onboarding() {
 function Input({ label, value, onChange, error }) {
   return (
     <div>
-      <label className="text-sm font-medium mb-1 block">{label}</label>
+      <label className="text-sm font-medium mb-1 block text-gray-700">
+        {label}
+      </label>
       <input
-        className={`w-full border rounded-lg px-3 py-2 ${
-          error ? "border-red-500" : ""
+        className={`w-full rounded-lg px-3 py-2 border focus:outline-none focus:ring-1 ${
+          error
+            ? "border-red-500 focus:ring-red-500"
+            : "border-gray-300 focus:ring-indigo-500"
         }`}
         value={value}
         onChange={e => onChange(e.target.value)}
       />
-      {error && <p className="text-sm text-red-600 mt-1">{error}</p>}
+      {error && (
+        <p className="text-sm text-red-600 mt-1">{error}</p>
+      )}
     </div>
   );
 }
 
 function SectionTitle({ title }) {
   return (
-    <h3 className="text-lg font-semibold border-b pb-2 mb-4">
+    <h3 className="text-lg font-semibold border-b pb-2 mb-4 text-gray-900">
       {title}
     </h3>
   );
