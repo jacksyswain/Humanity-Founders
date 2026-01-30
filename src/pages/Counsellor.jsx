@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import ChatBubble from "../components/ChatBubble";
@@ -8,44 +8,54 @@ export default function Counsellor() {
   const navigate = useNavigate();
   const { profile } = useUser();
 
-  // ---- PERSISTED CHAT HISTORY ----
+  /* ---------------- STATE ---------------- */
   const [messages, setMessages] = useState(() => {
     const saved = localStorage.getItem("aiMessages");
     return saved ? JSON.parse(saved) : [];
   });
 
   const [input, setInput] = useState("");
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef(null);
 
-  // ---- SAVE CHAT TO LOCALSTORAGE ----
+  /* ---------------- PERSIST CHAT ---------------- */
   useEffect(() => {
     localStorage.setItem("aiMessages", JSON.stringify(messages));
   }, [messages]);
 
-  // ---- INITIAL AI MESSAGE (ONLY ONCE) ----
+  /* ---------------- AI SPEAK ---------------- */
+  const speak = text => {
+    if (!("speechSynthesis" in window)) return;
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    utterance.rate = 1;
+    utterance.pitch = 1;
+
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
+  };
+
+  /* ---------------- INITIAL AI MESSAGE ---------------- */
   useEffect(() => {
     if (messages.length === 0) {
-      setMessages([
-        {
-          role: "ai",
-          text:
-            "Hi! I’ve reviewed your profile. I’ll help you evaluate your readiness, shortlist universities, and plan next steps. What would you like to do first?",
-          actions: [
-            {
-              label: "Evaluate my profile",
-              onClick: () => handleAI("evaluate"),
-            },
-            {
-              label: "Suggest universities",
-              onClick: () => handleAI("universities"),
-            },
-          ],
-        },
-      ]);
+      const welcome = {
+        role: "ai",
+        text:
+          "Hi! I’ve reviewed your profile. I can help evaluate your readiness, shortlist universities, and plan next steps. What would you like to do first?",
+        actions: [
+          { label: "Evaluate my profile", onClick: () => handleAI("evaluate") },
+          { label: "Suggest universities", onClick: () => handleAI("universities") },
+        ],
+      };
+
+      setMessages([welcome]);
+      speak(welcome.text);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ---- USER SEND MESSAGE ----
+  /* ---------------- SEND MESSAGE ---------------- */
   const sendMessage = () => {
     if (!input.trim()) return;
 
@@ -54,7 +64,34 @@ export default function Counsellor() {
     setInput("");
   };
 
-  // ---- MOCK AI DECISION LOGIC ----
+  /* ---------------- VOICE INPUT ---------------- */
+  const startListening = () => {
+    if (!("webkitSpeechRecognition" in window)) {
+      alert("Voice input is not supported in this browser");
+      return;
+    }
+
+    const recognition = new window.webkitSpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = "en-US";
+
+    recognition.onstart = () => setIsListening(true);
+
+    recognition.onresult = event => {
+      const transcript = event.results[0][0].transcript;
+      setMessages(m => [...m, { role: "user", text: transcript }]);
+      handleAI(transcript);
+    };
+
+    recognition.onend = () => setIsListening(false);
+    recognition.onerror = () => setIsListening(false);
+
+    recognition.start();
+    recognitionRef.current = recognition;
+  };
+
+  /* ---------------- MOCK AI LOGIC ---------------- */
   const handleAI = intent => {
     let response;
 
@@ -62,7 +99,7 @@ export default function Counsellor() {
       response = {
         role: "ai",
         text:
-          "Your academics are solid, but exams and SOP need improvement. I recommend beginning exam preparation while shortlisting universities in parallel.",
+          "Your academics are solid, but exams and SOP need improvement. I recommend starting exam preparation while shortlisting universities in parallel.",
         actions: [
           {
             label: "View AI To-Do List",
@@ -95,23 +132,23 @@ export default function Counsellor() {
 
     setTimeout(() => {
       setMessages(m => [...m, response]);
+      speak(response.text);
     }, 500);
   };
 
+  /* ---------------- UI ---------------- */
   return (
     <Layout title="AI Counsellor">
       <div className="max-w-4xl mx-auto h-[calc(100vh-160px)] flex flex-col">
-        {/* CONTEXT HEADER */}
+        {/* CONTEXT */}
         <div className="bg-gradient-to-r from-indigo-50 to-emerald-50 border border-indigo-200 rounded-xl p-4 mb-4 shadow-sm">
-          <p className="text-sm text-indigo-600 mb-1">
-            Current Stage
-          </p>
+          <p className="text-sm text-indigo-600 mb-1">Current Stage</p>
           <p className="font-semibold text-lg text-gray-900">
             {profile.stage}
           </p>
         </div>
 
-        {/* CHAT WINDOW */}
+        {/* CHAT */}
         <div className="flex-1 overflow-y-auto space-y-3 mb-4 px-1">
           {messages.map((msg, idx) => (
             <ChatBubble key={idx} {...msg} />
@@ -128,6 +165,20 @@ export default function Counsellor() {
               className="flex-1 border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               onKeyDown={e => e.key === "Enter" && sendMessage()}
             />
+
+            {/* MIC */}
+            <button
+              onClick={startListening}
+              className={`px-4 py-3 rounded-xl border transition ${
+                isListening
+                  ? "bg-red-100 text-red-600 border-red-300"
+                  : "bg-indigo-50 text-indigo-600 border-indigo-200 hover:bg-indigo-100"
+              }`}
+              title="Voice input"
+            >
+              🎤
+            </button>
+
             <button
               onClick={sendMessage}
               className="bg-indigo-600 text-white px-6 py-3 rounded-xl hover:bg-indigo-700 transition shadow-md"
@@ -136,7 +187,7 @@ export default function Counsellor() {
             </button>
           </div>
 
-          {/* QUICK SUGGESTIONS */}
+          {/* QUICK ACTIONS */}
           <div className="flex gap-2 mt-3 flex-wrap">
             <QuickAction
               label="Evaluate my profile"
@@ -153,7 +204,7 @@ export default function Counsellor() {
   );
 }
 
-/* ------------------ HELPERS ------------------ */
+/* ---------------- HELPERS ---------------- */
 
 function QuickAction({ label, onClick }) {
   return (
