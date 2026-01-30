@@ -3,12 +3,16 @@ export default function ProgressBar({ step, total }) {
 
   return (
     <div className="mb-6">
+      {/* LABEL */}
       <p className="text-sm text-gray-500 mb-2">
-        Step {step} of {total}
+        Step <span className="font-medium text-gray-800">{step}</span>{" "}
+        of <span className="font-medium text-gray-800">{total}</span>
       </p>
-      <div className="w-full h-2 bg-gray-200 rounded">
+
+      {/* BAR */}
+      <div className="w-full h-2.5 bg-gray-200 rounded-full overflow-hidden">
         <div
-          className="h-2 bg-black rounded transition-all"
+          className="h-full bg-gradient-to-r from-indigo-500 to-emerald-500 rounded-full transition-all duration-500 ease-out"
           style={{ width: `${percentage}%` }}
         />
       </div>
