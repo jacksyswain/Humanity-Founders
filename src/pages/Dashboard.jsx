@@ -59,9 +59,11 @@ export default function Dashboard() {
     <Layout title="Dashboard">
       <div className="max-w-6xl mx-auto space-y-10">
         {/* STAGE CARD */}
-        <div className="bg-white border rounded-xl p-6 shadow-sm">
-          <p className="text-sm text-gray-500 mb-1">Current Stage</p>
-          <p className="text-xl font-semibold">{profile.stage}</p>
+        <div className="bg-gradient-to-r from-indigo-50 to-emerald-50 border border-indigo-200 rounded-2xl p-6 shadow-sm">
+          <p className="text-sm text-indigo-600 mb-1">Current Stage</p>
+          <p className="text-xl font-semibold text-gray-900">
+            {profile.stage}
+          </p>
         </div>
 
         {/* PROFILE SUMMARY + STRENGTH */}
@@ -83,7 +85,9 @@ export default function Dashboard() {
         {/* AI TODO LIST */}
         <Card title="AI To-Do List">
           {tasks.length === 0 ? (
-            <p className="text-gray-500">You are all caught up 🎉</p>
+            <p className="text-emerald-600 font-medium">
+              You are all caught up 🎉
+            </p>
           ) : (
             <div className="space-y-3">
               {tasks.map(task => (
@@ -101,7 +105,7 @@ export default function Dashboard() {
         <div className="flex justify-end">
           <button
             onClick={() => navigate("/counsellor")}
-            className="bg-black text-white px-8 py-4 rounded-xl text-lg hover:opacity-90 transition"
+            className="bg-indigo-600 text-white px-8 py-4 rounded-2xl text-lg hover:bg-indigo-700 transition shadow-lg"
           >
             Talk to AI Counsellor →
           </button>
@@ -116,15 +120,15 @@ export default function Dashboard() {
 function StrengthRow({ label, value }) {
   const color =
     value === "Strong"
-      ? "text-green-600"
+      ? "text-emerald-600"
       : value === "Average" || value === "In Progress"
-      ? "text-yellow-600"
+      ? "text-amber-600"
       : "text-red-600";
 
   return (
     <div className="flex justify-between items-center py-1">
       <span className="text-gray-700">{label}</span>
-      <span className={`font-medium ${color}`}>{value}</span>
+      <span className={`font-semibold ${color}`}>{value}</span>
     </div>
   );
 }
@@ -133,15 +137,21 @@ function InfoRow({ label, value }) {
   return (
     <div className="flex justify-between items-center py-1">
       <span className="text-gray-500">{label}</span>
-      <span className="font-medium">{value || "—"}</span>
+      <span className="font-medium text-gray-900">
+        {value || "—"}
+      </span>
     </div>
   );
 }
 
 function Card({ title, children }) {
   return (
-    <div className="bg-white border rounded-xl p-6 shadow-sm space-y-3">
-      {title && <h3 className="font-semibold text-lg">{title}</h3>}
+    <div className="bg-white/80 backdrop-blur border rounded-2xl p-6 shadow-sm space-y-3">
+      {title && (
+        <h3 className="font-semibold text-lg text-gray-900">
+          {title}
+        </h3>
+      )}
       {children}
     </div>
   );
