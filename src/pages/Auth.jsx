@@ -15,31 +15,34 @@ export default function Auth() {
       setError("Please enter a valid email address");
       return;
     }
-
     navigate("/onboarding");
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center px-6">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-emerald-50 flex items-center justify-center px-6">
       <div className="max-w-md w-full">
         {/* AUTH CARD */}
-        <div className="bg-white border rounded-2xl shadow-sm p-8 space-y-6">
-          {/* BRAND */}
-          <div className="text-center">
-            <p className="text-sm font-medium text-gray-500 mb-2">
+        <div className="bg-white/80 backdrop-blur border rounded-2xl shadow-xl p-8 space-y-6">
+          {/* BRAND BADGE */}
+          <div className="flex justify-center">
+            <div className="px-4 py-1.5 rounded-full bg-indigo-100 text-indigo-700 text-sm font-medium">
               StudyAbroad AI
-            </p>
-            <h1 className="text-2xl font-bold">
+            </div>
+          </div>
+
+          {/* HEADER */}
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-gray-900">
               Sign in to continue
             </h1>
             <p className="text-gray-600 mt-1">
-              Get personalized guidance for your study-abroad journey
+              Your personalized study-abroad assistant
             </p>
           </div>
 
           {/* EMAIL INPUT */}
           <div>
-            <label className="text-sm font-medium mb-1 block">
+            <label className="text-sm font-medium text-gray-700 mb-1 block">
               Email address
             </label>
             <input
@@ -50,8 +53,8 @@ export default function Auth() {
                 setEmail(e.target.value);
                 setError("");
               }}
-              className={`w-full border rounded-xl px-4 py-3 focus:outline-none focus:ring-1 focus:ring-black ${
-                error ? "border-red-500" : ""
+              className={`w-full rounded-xl px-4 py-3 bg-white border focus:outline-none focus:ring-2 focus:ring-indigo-500 transition ${
+                error ? "border-red-500" : "border-gray-300"
               }`}
             />
             {error && (
@@ -64,7 +67,7 @@ export default function Auth() {
           {/* PRIMARY CTA */}
           <button
             onClick={handleContinue}
-            className="w-full bg-black text-white py-3 rounded-xl text-lg hover:opacity-90 transition"
+            className="w-full bg-indigo-600 text-white py-3 rounded-xl text-lg hover:bg-indigo-700 transition shadow-md"
           >
             Continue
           </button>
@@ -79,7 +82,7 @@ export default function Auth() {
           {/* GOOGLE MOCK */}
           <button
             onClick={() => navigate("/onboarding")}
-            className="w-full border py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-gray-50 transition"
+            className="w-full bg-white border border-gray-300 py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-gray-50 transition"
           >
             <span className="text-lg">G</span>
             Continue with Google
@@ -87,11 +90,11 @@ export default function Auth() {
 
           {/* FOOTER */}
           <p className="text-center text-xs text-gray-500">
-            This is a mock authentication flow for demonstration purposes
+            This is a mock authentication flow
           </p>
         </div>
 
-        {/* LEGAL / TRUST */}
+        {/* LEGAL */}
         <p className="text-center text-xs text-gray-400 mt-6">
           By continuing, you agree to our Terms & Privacy Policy
         </p>
