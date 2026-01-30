@@ -4,22 +4,23 @@ export default function ChatBubble({ role, text, actions = [] }) {
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
       <div
-        className={`max-w-[70%] rounded-lg p-3 mb-3 ${
+        className={`max-w-[75%] rounded-2xl px-4 py-3 mb-3 shadow-sm ${
           isUser
-            ? "bg-black text-white"
-            : "bg-gray-100 text-gray-800"
+            ? "bg-indigo-600 text-white"
+            : "bg-white border border-gray-200 text-gray-800"
         }`}
       >
-        <p className="mb-2">{text}</p>
+        {/* MESSAGE TEXT */}
+        <p className="leading-relaxed">{text}</p>
 
-        {/* ACTION BUTTONS */}
+        {/* ACTION BUTTONS (AI ONLY) */}
         {actions.length > 0 && (
-          <div className="flex gap-2 mt-2 flex-wrap">
+          <div className="flex gap-2 mt-3 flex-wrap">
             {actions.map((action, idx) => (
               <button
                 key={idx}
                 onClick={action.onClick}
-                className="text-sm border px-3 py-1 rounded bg-white hover:bg-gray-50"
+                className="text-sm px-4 py-1.5 rounded-full border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition"
               >
                 {action.label}
               </button>
