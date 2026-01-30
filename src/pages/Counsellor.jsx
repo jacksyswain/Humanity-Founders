@@ -102,9 +102,13 @@ export default function Counsellor() {
     <Layout title="AI Counsellor">
       <div className="max-w-4xl mx-auto h-[calc(100vh-160px)] flex flex-col">
         {/* CONTEXT HEADER */}
-        <div className="bg-white border rounded-xl p-4 mb-4 shadow-sm">
-          <p className="text-sm text-gray-500 mb-1">Current Stage</p>
-          <p className="font-semibold text-lg">{profile.stage}</p>
+        <div className="bg-gradient-to-r from-indigo-50 to-emerald-50 border border-indigo-200 rounded-xl p-4 mb-4 shadow-sm">
+          <p className="text-sm text-indigo-600 mb-1">
+            Current Stage
+          </p>
+          <p className="font-semibold text-lg text-gray-900">
+            {profile.stage}
+          </p>
         </div>
 
         {/* CHAT WINDOW */}
@@ -115,18 +119,18 @@ export default function Counsellor() {
         </div>
 
         {/* INPUT BAR */}
-        <div className="bg-white border rounded-xl p-4 shadow-sm">
+        <div className="bg-white/80 backdrop-blur border rounded-2xl p-4 shadow-lg">
           <div className="flex gap-2">
             <input
               value={input}
               onChange={e => setInput(e.target.value)}
               placeholder="Ask me anything about your study abroad plan..."
-              className="flex-1 border rounded-lg px-4 py-3 focus:outline-none focus:ring-1 focus:ring-black"
+              className="flex-1 border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               onKeyDown={e => e.key === "Enter" && sendMessage()}
             />
             <button
               onClick={sendMessage}
-              className="bg-black text-white px-6 py-3 rounded-lg hover:opacity-90 transition"
+              className="bg-indigo-600 text-white px-6 py-3 rounded-xl hover:bg-indigo-700 transition shadow-md"
             >
               Send
             </button>
@@ -155,7 +159,7 @@ function QuickAction({ label, onClick }) {
   return (
     <button
       onClick={onClick}
-      className="text-sm border rounded-full px-4 py-1.5 bg-gray-50 hover:bg-gray-100 transition"
+      className="text-sm px-4 py-1.5 rounded-full border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition"
     >
       {label}
     </button>
