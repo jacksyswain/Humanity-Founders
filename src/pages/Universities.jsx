@@ -41,32 +41,31 @@ export default function Universities() {
 
   return (
     <Layout title="University Shortlist">
-      <div className="max-w-6xl mx-auto space-y-12">
+      <div className="max-w-6xl mx-auto space-y-14">
         {/* INTRO */}
-        <div className="bg-white border rounded-xl p-6 shadow-sm">
-          <p className="text-gray-600 text-lg">
+        <div className="bg-gradient-to-r from-indigo-50 to-emerald-50 border border-indigo-200 rounded-2xl p-6 shadow-sm">
+          <p className="text-gray-700 text-lg">
             Universities are grouped by <strong>ambition</strong> and{" "}
-            <strong>acceptance probability</strong>.  
-            Locking a university will personalize your entire application
-            strategy.
+            <strong>acceptance probability</strong>. Locking a university
+            personalizes your entire application strategy.
           </p>
         </div>
 
         {/* LOCKED BANNER */}
         {isLocked && (
-          <div className="flex items-center justify-between bg-gradient-to-r from-green-50 to-green-100 border border-green-600 rounded-xl p-5 shadow-sm">
+          <div className="flex items-center justify-between bg-gradient-to-r from-emerald-50 to-emerald-100 border border-emerald-500 rounded-2xl p-5 shadow-sm">
             <div>
-              <p className="text-sm text-green-700 uppercase tracking-wide">
+              <p className="text-xs uppercase tracking-wide text-emerald-700">
                 Locked University
               </p>
-              <p className="text-lg font-semibold text-green-800">
+              <p className="text-lg font-semibold text-emerald-900">
                 {lockedUniversity}
               </p>
             </div>
 
             <button
               onClick={() => setShowUnlockModal(true)}
-              className="text-sm text-red-600 font-medium underline hover:text-red-700"
+              className="text-sm font-medium text-red-600 underline hover:text-red-700"
             >
               Unlock
             </button>
@@ -76,7 +75,8 @@ export default function Universities() {
         {/* DREAM */}
         <Section
           title="Dream Universities"
-          subtitle="Highly ambitious choices with strong competition"
+          subtitle="Highly ambitious options with intense competition"
+          accent="indigo"
         >
           {universities.dream.map(uni => (
             <UniversityCard
@@ -91,7 +91,8 @@ export default function Universities() {
         {/* TARGET */}
         <Section
           title="Target Universities"
-          subtitle="Balanced options with realistic acceptance chances"
+          subtitle="Balanced choices with realistic acceptance chances"
+          accent="amber"
         >
           {universities.target.map(uni => (
             <UniversityCard
@@ -107,6 +108,7 @@ export default function Universities() {
         <Section
           title="Safe Universities"
           subtitle="High acceptance probability and lower risk"
+          accent="emerald"
         >
           {universities.safe.map(uni => (
             <UniversityCard
@@ -132,11 +134,19 @@ export default function Universities() {
 
 /* ------------------ SECTION ------------------ */
 
-function Section({ title, subtitle, children }) {
+function Section({ title, subtitle, accent, children }) {
+  const accentMap = {
+    indigo: "text-indigo-600",
+    amber: "text-amber-600",
+    emerald: "text-emerald-600",
+  };
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       <div>
-        <h2 className="text-2xl font-bold">{title}</h2>
+        <h2 className={`text-2xl font-bold ${accentMap[accent]}`}>
+          {title}
+        </h2>
         <p className="text-gray-500">{subtitle}</p>
       </div>
 
